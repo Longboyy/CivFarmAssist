@@ -1,0 +1,9 @@
+name: CivFarmAssist
+main: com.github.longboyy.civfarmassist.CivFarmAssist
+version: 1.0.0
+authors: [sarhatabaot, Longboyy]
+website: https://github.com/CivUnion/CivFarmAssist
+description: A Civ rewrite of FarmAssistReboot by 'sarhatabaot'
+api-version: 1.16
+depend: [CivModCore]
+softdepend: [NobilityItems]

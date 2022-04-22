@@ -1,0 +1,24 @@
+crops:
+  wheat:
+    crop:
+      wheat:
+        material: WHEAT
+    plantedOn:
+      farmland:
+        material: FARMLAND
+    seed:
+      minDrop: 1
+      maxDrop: 1
+      item:
+        wheat_seeds:
+          material: WHEAT_SEEDS
+    harvest:
+      minDrop: 1
+      maxDrop: 2
+      item:
+        wheat:
+          material: WHEAT
+          lore:
+            - Freshly harvested
+    validDirections:
+      - DOWN

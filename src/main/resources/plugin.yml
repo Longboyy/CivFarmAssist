@@ -5,5 +5,5 @@ authors: [sarhatabaot, Longboyy]
 website: https://github.com/CivUnion/CivFarmAssist
 description: A Civ rewrite of FarmAssistReboot by 'sarhatabaot'
 api-version: 1.16
-depend: [CivModCore]
+depend: [CivModCore, Citadel]
 softdepend: [NobilityItems]

@@ -2,6 +2,7 @@ package com.github.longboyy.civfarmassist.crops;
 
 import com.github.longboyy.civfarmassist.CFAConfigManager;
 import com.github.longboyy.civfarmassist.CivFarmAssist;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -13,20 +14,39 @@ import java.util.List;
 
 public class Crop {
 
-    private ItemStack crop;
-    private ItemStack plantedOn;
-    private CropDrop seed;
-    private CropDrop harvest;
+    private final boolean dropSeedsWhenRipe;
+    private final boolean harvestIsSeed;
+    private final boolean autoReplant;
+    private final ItemStack crop;
+    private final ItemStack plantedOn;
+    private final CropDrop seed;
+    private final CropDrop harvest;
 
     // VALID DIRECTIONS ARE RELATIVE TO THE CROP - FOR EXAMPLE `DOWN` MEANS SEARCH BELOW CROP FOR `plantedOn`
-    private List<BlockFace> validDirections;
+    private final List<BlockFace> validDirections;
 
-    public Crop(ItemStack crop, ItemStack plantedOn, CropDrop seed, CropDrop harvest, List<BlockFace> validDirections){
+    public Crop(ItemStack crop, ItemStack plantedOn, CropDrop seed, CropDrop harvest, List<BlockFace> validDirections,
+                boolean dropSeedsWhenRipe, boolean harvestIsSeed, boolean autoReplant){
         this.crop = crop;
         this.plantedOn = plantedOn;
         this.seed = seed;
         this.harvest = harvest;
         this.validDirections = validDirections;
+        this.dropSeedsWhenRipe = dropSeedsWhenRipe;
+        this.harvestIsSeed = harvestIsSeed;
+        this.autoReplant = autoReplant;
+    }
+
+    public boolean isDropSeedsWhenRipe(){
+        return dropSeedsWhenRipe;
+    }
+
+    public boolean isHarvestAlsoSeed(){
+        return harvestIsSeed;
+    }
+
+    public boolean isAutoReplant(){
+        return autoReplant;
     }
 
     public ItemStack getCrop() {
@@ -54,36 +74,24 @@ public class Crop {
             return null;
         }
 
-        /*
-        ItemMap cropMap = ConfigParsing.parseItemMap(config.getConfigurationSection("crop"));
-        if(cropMap == null || !(cropMap.getTotalUniqueItemAmount() > 0)){
-            return null;
-        }
-        ItemStack cropItem = cropMap.getItemStackRepresentation().get(0);
-        cropItem.setAmount(1);
-
-        ItemMap plantedOnMap = ConfigParsing.parseItemMap(config.getConfigurationSection("plantedOn"));
-        if(plantedOnMap == null || !(plantedOnMap.getTotalUniqueItemAmount() > 0)){
-            return null;
-        }
-        ItemStack plantedOnItem = plantedOnMap.getItemStackRepresentation().get(0);
-        plantedOnItem.setAmount(1);
-         */
-
         ItemStack cropItem = CFAConfigManager.parseFirstItem(config.getConfigurationSection("crop"));
-        ItemStack plantedOnItem = CFAConfigManager.parseFirstItem(config.getConfigurationSection("plantedOn"));
 
-        CropDrop seedDrop = CropDrop.parseCropDrop(config.getConfigurationSection("seed"));
-        if(seedDrop == null){
-            return null;
-        }
-        CivFarmAssist.getInstance(CivFarmAssist.class).getLogger().info("Seed drop parsing");
+        cropItem.setType(convertToCrop(cropItem.getType()));
+        ItemStack plantedOnItem = CFAConfigManager.parseFirstItem(config.getConfigurationSection("plantedOn"));
 
         CropDrop harvestDrop = CropDrop.parseCropDrop(config.getConfigurationSection("harvest"));
         if(harvestDrop == null){
             return null;
         }
-        CivFarmAssist.getInstance(CivFarmAssist.class).getLogger().info("Harvest drop parsing");
+
+        boolean harvestIsSeed = config.getBoolean("harvestIsSeed", false);
+        boolean ripeSeed = config.getBoolean("ripeSeeds", false);
+        boolean autoReplant = config.getBoolean("autoReplant", true);
+
+        CropDrop seedDrop = CropDrop.parseCropDrop(config.getConfigurationSection("seed"));
+        if (seedDrop == null) {
+            return null;
+        }
 
         List<String> directions = config.getStringList("validDirections");
 
@@ -96,9 +104,23 @@ public class Crop {
         }else{
             blockDirections.add(BlockFace.DOWN);
         }
-        CivFarmAssist.getInstance(CivFarmAssist.class).getLogger().info("directions parsing");
 
-        return new Crop(cropItem, plantedOnItem, seedDrop, harvestDrop, blockDirections);
+        return new Crop(cropItem, plantedOnItem, seedDrop, harvestDrop, blockDirections, ripeSeed, harvestIsSeed, autoReplant);
+    }
+
+    private static Material convertToCrop(Material material){
+        switch(material){
+            case COCOA_BEANS:
+                return Material.COCOA;
+            case CARROT:
+                return Material.CARROTS;
+            case POTATO:
+                return Material.POTATOES;
+            case BEETROOT:
+                return Material.BEETROOTS;
+            default:
+                return material;
+        }
     }
 
 }

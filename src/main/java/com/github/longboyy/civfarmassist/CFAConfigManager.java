@@ -8,6 +8,7 @@ import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.CoreConfigManager;
 import vg.civcraft.mc.civmodcore.util.ConfigParsing;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CFAConfigManager extends CoreConfigManager {
@@ -57,6 +58,7 @@ public class CFAConfigManager extends CoreConfigManager {
         for (String key : config.getKeys(false)) {
             ConfigurationSection current = config.getConfigurationSection(key);
             List<ItemStack> list = ConfigParsing.parseItemMapDirectly(current).getItemStackRepresentation();
+            //List<ItemStack> list = new ArrayList<>();
             return list.isEmpty() ? null : list.get(0);
         }
 

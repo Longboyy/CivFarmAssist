@@ -22,3 +22,5 @@ crops:
             - Freshly harvested
     validDirections:
       - DOWN
+    ripeSeeds: true
+    harvestIsSeed: true

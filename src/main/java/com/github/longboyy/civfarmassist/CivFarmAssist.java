@@ -34,7 +34,8 @@ public class CivFarmAssist extends ACivMod {
                 GroupManager.PlayerType.MODS,
                 GroupManager.PlayerType.MEMBERS
         ));
-        this.nobilityEnabled = getServer().getPluginManager().getPlugin("NobilityItems") != null;
+        //this.nobilityEnabled = getServer().getPluginManager().getPlugin("NobilityItems") != null;
+        this.nobilityEnabled = false;
         this.registerListener(new CropListener(this, cropManager));
     }
 
